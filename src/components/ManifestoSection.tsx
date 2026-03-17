@@ -70,8 +70,8 @@ const ManifestoSection = () => {
           className="mt-24 grid grid-cols-3 gap-0 max-w-2xl"
         >
           {[
-            { value: "2K+", label: "WOMEN UPGRADED" },
-            { value: "98%", label: "RETENTION RATE" },
+            { value: "47+", label: "WOMEN UPGRADED" },
+            { value: "4.9★", label: "AVERAGE RATING" },
             { value: "∞", label: "POTENTIAL", gold: true },
           ].map((stat, i) => (
             <div key={i} className={`pr-8 ${i > 0 ? "pl-8 border-l border-foreground/10" : ""}`}>
@@ -105,10 +105,10 @@ const ManifestoLine = ({
 
   return (
     <motion.p
-      style={{ opacity, x }}
-      className="font-display text-3xl md:text-6xl lg:text-7xl tracking-tighter text-foreground leading-[0.95]"
+      style={{ opacity, x, color: "#FFB6C1" }}
+      className="font-display text-3xl md:text-6xl lg:text-7xl tracking-tighter leading-[0.95]"
     >
-      {index === 5 ? <em>{text}</em> : text}
+      {index === 5 ? <em style={{ color: "#FF69B4" }}>{text}</em> : text}
     </motion.p>
   );
 };

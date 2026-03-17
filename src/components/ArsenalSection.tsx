@@ -1,40 +1,7 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import ProductCard from "./ProductCard";
-import productIdentity from "@/assets/product-identity.jpg";
-import productDiscipline from "@/assets/product-discipline.jpg";
-import productFinancial from "@/assets/product-financial.jpg";
-import productConfidence from "@/assets/product-confidence.jpg";
-
-const products = [
-  {
-    phase: "PHASE 01",
-    title: "The Sovereign Mindset",
-    price: "$97",
-    image: productIdentity,
-    description: "Reprogram your identity at the neural level. 21-day cognitive restructuring protocol.",
-  },
-  {
-    phase: "PHASE 02",
-    title: "The Discipline Protocol",
-    price: "$127",
-    image: productDiscipline,
-    description: "The 90-day system that eliminates procrastination and installs military-grade habits.",
-  },
-  {
-    phase: "PHASE 03",
-    title: "Financial Sovereignty",
-    price: "$197",
-    image: productFinancial,
-    description: "Build your first $100K. Investment frameworks, multiple income streams, wealth psychology.",
-  },
-  {
-    phase: "PHASE 04",
-    title: "The Confidence Armour",
-    price: "$77",
-    image: productConfidence,
-    description: "Body language mastery, vocal authority, and the psychology of commanding any room.",
-  },
-];
+import { PRODUCTS } from "@/data/products";
 
 const ArsenalSection = () => {
   return (
@@ -48,15 +15,21 @@ const ArsenalSection = () => {
             <span className="italic">BLUEPRINTS</span>
           </h2>
         </div>
-        <span className="text-label text-muted-foreground hidden md:block">
-          04 DIGITAL PRODUCTS
-        </span>
+        <div className="hidden md:flex flex-col items-end gap-3">
+          <span className="text-label" style={{ color: "rgba(255,182,193,0.7)" }}>04 DIGITAL PRODUCTS</span>
+          <Link
+            to="/reviews"
+            className="font-ui text-xs tracking-[0.25em] uppercase text-primary hover-underline flex items-center gap-2"
+          >
+            READ RESULTS →
+          </Link>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {products.map((product, i) => (
+        {PRODUCTS.map((product, i) => (
           <motion.div
-            key={product.title}
+            key={product.id}
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -66,10 +39,40 @@ const ArsenalSection = () => {
               ease: [0.23, 1, 0.32, 1],
             }}
           >
-            <ProductCard {...product} />
+            <Link to={`/product/${product.id}`}>
+              <ProductCard
+                id={product.id}
+                phase={product.phase}
+                title={product.title}
+                price={product.price}
+                image={product.image}
+                description={product.description}
+              />
+            </Link>
           </motion.div>
         ))}
       </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.4, duration: 0.8 }}
+        className="mt-16 flex flex-col md:flex-row items-center justify-between border-t pt-10 gap-6"
+        style={{ borderColor: "rgba(255,255,255,0.06)" }}
+      >
+        <p className="font-display text-2xl md:text-3xl tracking-tighter text-foreground italic">
+          "The best investment you'll ever make is in yourself."
+        </p>
+        <Link
+          to="/reviews"
+          className="flex-shrink-0 px-8 py-3 font-ui text-xs tracking-[0.2em] uppercase text-white transition-all"
+          style={{ background: "rgba(255,20,147,0.12)", border: "1px solid rgba(255,20,147,0.35)" }}
+          data-cursor="EXPLORE"
+        >
+          READ EARLY RESULTS →
+        </Link>
+      </motion.div>
     </section>
   );
 };

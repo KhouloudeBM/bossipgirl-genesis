@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 
 interface ProductCardProps {
+  id: string;
   phase: string;
   title: string;
   price: string;
@@ -14,8 +15,8 @@ const ProductCard = ({ phase, title, price, image, description }: ProductCardPro
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [7, -7]), { stiffness: 200, damping: 30 });
-  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-7, 7]), { stiffness: 200, damping: 30 });
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), { stiffness: 200, damping: 30 });
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), { stiffness: 200, damping: 30 });
   const glareX = useTransform(mouseX, [-0.5, 0.5], ["0%", "100%"]);
   const glareY = useTransform(mouseY, [-0.5, 0.5], ["0%", "100%"]);
 
@@ -45,6 +46,7 @@ const ProductCard = ({ phase, title, price, image, description }: ProductCardPro
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
       className="group relative aspect-[3/4] overflow-hidden border border-foreground/10 bg-muted cursor-none"
+      data-cursor="VIEW"
     >
       <img
         src={image}
@@ -58,9 +60,15 @@ const ProductCard = ({ phase, title, price, image, description }: ProductCardPro
         style={{
           background: useTransform(
             [glareX, glareY],
-            ([x, y]) => `radial-gradient(circle at ${x} ${y}, rgba(255,255,255,0.07) 0%, transparent 60%)`
+            ([x, y]) => `radial-gradient(circle at ${x} ${y}, rgba(255,20,147,0.08) 0%, transparent 60%)`
           ),
         }}
+      />
+
+      {/* Pink border glow on hover */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{ boxShadow: "inset 0 0 40px rgba(255,20,147,0.08)" }}
       />
 
       <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/20 to-transparent" />
@@ -71,7 +79,10 @@ const ProductCard = ({ phase, title, price, image, description }: ProductCardPro
       </div>
 
       <div className="absolute bottom-0 left-0 right-0 p-6">
-        <div className="w-0 group-hover:w-full h-px bg-primary mb-4 transition-all duration-700 ease-out" />
+        <div
+          className="w-0 group-hover:w-full h-px mb-4 transition-all duration-700 ease-out"
+          style={{ background: "linear-gradient(90deg, #FF1493, rgba(255,20,147,0.3))" }}
+        />
         <h3 className="font-display text-3xl md:text-4xl tracking-tighter text-foreground leading-[0.9]">
           {title}
         </h3>
@@ -79,8 +90,10 @@ const ProductCard = ({ phase, title, price, image, description }: ProductCardPro
           {description}
         </p>
         <div className="mt-5 overflow-hidden">
-          <span className="text-label text-foreground hover-underline inline-flex items-center gap-2 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
-            ACQUIRE THE BLUEPRINT <span className="text-primary">→</span>
+          <span
+            className="text-label text-foreground hover-underline inline-flex items-center gap-2 translate-y-full group-hover:translate-y-0 transition-transform duration-500"
+          >
+            VIEW BLUEPRINT <span style={{ color: "#FF1493" }}>→</span>
           </span>
         </div>
       </div>

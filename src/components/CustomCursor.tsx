@@ -1,86 +1,166 @@
 import { useEffect, useRef } from "react";
 
+const TRAIL = 10;
+
 const CustomCursor = () => {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
+  const labelRef = useRef<HTMLSpanElement>(null);
+  const trailRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    let mouseX = 0;
-    let mouseY = 0;
-    let ringX = 0;
-    let ringY = 0;
+    let mx = 0, my = 0;
+    let rx = 0, ry = 0;
+    let rSize = 40;
+    let label = "";
     let rafId: number;
+    const trail = Array.from({ length: TRAIL }, () => ({ x: 0, y: 0 }));
 
-    const onMouseMove = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
+    const onMove = (e: MouseEvent) => {
+      mx = e.clientX;
+      my = e.clientY;
+
       if (dotRef.current) {
-        dotRef.current.style.transform = `translate(${mouseX - 4}px, ${mouseY - 4}px)`;
+        dotRef.current.style.transform = `translate(${mx - 4}px, ${my - 4}px)`;
+      }
+
+      // Find data-cursor attribute on hovered element or ancestor
+      const el = (e.target as HTMLElement).closest("[data-cursor]") as HTMLElement | null;
+      label = el?.dataset.cursor ?? "";
+      if (labelRef.current) {
+        labelRef.current.textContent = label;
       }
     };
 
-    const animate = () => {
-      ringX += (mouseX - ringX) * 0.12;
-      ringY += (mouseY - ringY) * 0.12;
+    const loop = () => {
+      // Update trail positions
+      trail.pop();
+      trail.unshift({ x: mx, y: my });
+
+      trailRefs.current.forEach((el, i) => {
+        if (!el) return;
+        const ratio = (TRAIL - i) / TRAIL;
+        el.style.transform = `translate(${trail[i].x - 3}px, ${trail[i].y - 3}px) scale(${0.3 + ratio * 0.7})`;
+        el.style.opacity = String(ratio * 0.45);
+      });
+
+      // Smooth ring follow with lag
+      rx += (mx - rx) * 0.1;
+      ry += (my - ry) * 0.1;
+
+      // Lerp ring size for smooth expand/contract
+      const targetSize = label ? 120 : 40;
+      rSize += (targetSize - rSize) * 0.1;
+
       if (ringRef.current) {
-        ringRef.current.style.transform = `translate(${ringX - 20}px, ${ringY - 20}px)`;
+        ringRef.current.style.transform = `translate(${rx - rSize / 2}px, ${ry - rSize / 2}px)`;
+        ringRef.current.style.width = `${rSize}px`;
+        ringRef.current.style.height = `${rSize}px`;
+        // Increase border opacity when expanded
+        const borderAlpha = label ? 0.9 : 0.7;
+        ringRef.current.style.borderColor = `rgba(255, 20, 147, ${borderAlpha})`;
+        // Inner fill tint when expanded
+        ringRef.current.style.backgroundColor = label
+          ? "rgba(255, 20, 147, 0.08)"
+          : "transparent";
       }
-      rafId = requestAnimationFrame(animate);
+
+      if (labelRef.current) {
+        labelRef.current.style.opacity = label ? "1" : "0";
+        labelRef.current.style.transform = label ? "scale(1)" : "scale(0.7)";
+      }
+
+      rafId = requestAnimationFrame(loop);
     };
 
-    const onMouseEnterLink = () => {
-      if (dotRef.current) dotRef.current.style.transform += " scale(0)";
-      if (ringRef.current) {
-        ringRef.current.style.width = "60px";
-        ringRef.current.style.height = "60px";
-        ringRef.current.style.borderColor = "hsl(45 15% 45%)";
-        ringRef.current.style.marginLeft = "-10px";
-        ringRef.current.style.marginTop = "-10px";
-      }
-    };
+    // Magnetic effect: elements move slightly toward cursor on hover
+    const setupMagnetic = () => {
+      document.querySelectorAll("[data-magnetic]").forEach((raw) => {
+        const elem = raw as HTMLElement;
+        let active = false;
 
-    const onMouseLeaveLink = () => {
-      if (ringRef.current) {
-        ringRef.current.style.width = "40px";
-        ringRef.current.style.height = "40px";
-        ringRef.current.style.borderColor = "rgba(255,255,255,0.5)";
-        ringRef.current.style.marginLeft = "0px";
-        ringRef.current.style.marginTop = "0px";
-      }
-    };
+        elem.addEventListener("mouseenter", () => {
+          active = true;
+          elem.style.transition = "";
+        });
 
-    const addLinkListeners = () => {
-      document.querySelectorAll("a, button").forEach((el) => {
-        el.addEventListener("mouseenter", onMouseEnterLink);
-        el.addEventListener("mouseleave", onMouseLeaveLink);
+        elem.addEventListener("mouseleave", () => {
+          active = false;
+          elem.style.transition = "transform 0.7s cubic-bezier(0.23, 1, 0.32, 1)";
+          elem.style.transform = "translate(0, 0)";
+        });
+
+        elem.addEventListener("mousemove", (e: Event) => {
+          if (!active) return;
+          const me = e as MouseEvent;
+          const rect = elem.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          const dx = (me.clientX - cx) * 0.4;
+          const dy = (me.clientY - cy) * 0.4;
+          elem.style.transform = `translate(${dx}px, ${dy}px)`;
+        });
       });
     };
 
-    window.addEventListener("mousemove", onMouseMove);
-    addLinkListeners();
-    rafId = requestAnimationFrame(animate);
+    window.addEventListener("mousemove", onMove);
+    const setupTimer = setTimeout(setupMagnetic, 1000);
+    rafId = requestAnimationFrame(loop);
 
     return () => {
-      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mousemove", onMove);
       cancelAnimationFrame(rafId);
+      clearTimeout(setupTimer);
     };
   }, []);
 
   return (
     <>
+      {/* Main dot — mix-blend-mode:difference inverts background color */}
       <div
         ref={dotRef}
         className="fixed top-0 left-0 w-2 h-2 bg-white rounded-full pointer-events-none z-[9999] mix-blend-difference"
-        style={{ transition: "transform 0.05s linear", willChange: "transform" }}
+        style={{ willChange: "transform" }}
       />
+
+      {/* Hot pink particle trail */}
+      {Array.from({ length: TRAIL }).map((_, i) => (
+        <div
+          key={i}
+          ref={(el) => { trailRefs.current[i] = el; }}
+          className="fixed top-0 left-0 w-1.5 h-1.5 rounded-full pointer-events-none z-[9996]"
+          style={{
+            backgroundColor: "#FF1493",
+            willChange: "transform, opacity",
+            opacity: 0,
+          }}
+        />
+      ))}
+
+      {/* Ring with text label */}
       <div
         ref={ringRef}
-        className="fixed top-0 left-0 w-10 h-10 rounded-full pointer-events-none z-[9998] border border-white/50"
+        className="fixed top-0 left-0 rounded-full pointer-events-none z-[9998] flex items-center justify-center"
         style={{
-          transition: "width 0.3s ease, height 0.3s ease, border-color 0.3s ease",
-          willChange: "transform",
+          width: "40px",
+          height: "40px",
+          border: "1.5px solid rgba(255, 20, 147, 0.7)",
+          willChange: "transform, width, height",
+          backdropFilter: "none",
         }}
-      />
+      >
+        <span
+          ref={labelRef}
+          className="font-ui text-[9px] tracking-[0.3em] uppercase text-white"
+          style={{
+            opacity: 0,
+            transition: "opacity 0.25s ease, transform 0.25s ease",
+            color: "#FF1493",
+            fontWeight: 600,
+            letterSpacing: "0.25em",
+          }}
+        />
+      </div>
     </>
   );
 };

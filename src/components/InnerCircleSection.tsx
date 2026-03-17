@@ -60,7 +60,8 @@ const InnerCircleSection = () => {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3, duration: 0.8 }}
-          className="text-muted-foreground mt-8 max-w-md mx-auto leading-relaxed text-sm tracking-wide"
+          className="mt-8 max-w-md mx-auto leading-relaxed text-sm tracking-wide"
+          style={{ color: "rgba(255,182,193,0.75)" }}
         >
           Early access to new blueprints. Private resources. Intelligence briefings on wealth, identity, and power. This is not a newsletter — it&apos;s an application.
         </motion.p>
@@ -84,10 +85,14 @@ const InnerCircleSection = () => {
             />
             <motion.button
               type="submit"
-              whileHover={{ backgroundColor: "hsl(0 85% 45%)" }}
-              className="bg-crimson px-8 py-4 text-label text-foreground transition-colors cursor-none whitespace-nowrap"
+              whileHover={{ scale: 1.03, boxShadow: "0 0 30px rgba(255,20,147,0.5)" }}
+              className="px-8 py-4 text-label text-foreground transition-all cursor-none whitespace-nowrap"
+              style={{
+                background: "linear-gradient(135deg, rgba(255,20,147,0.85), rgba(255,105,180,0.9))",
+                border: "1px solid rgba(255,20,147,0.5)",
+              }}
             >
-              APPLY NOW →
+              JOIN THE CIRCLE →
             </motion.button>
           </motion.form>
         ) : (
@@ -107,7 +112,8 @@ const InnerCircleSection = () => {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.6 }}
-          className="text-label text-muted-foreground mt-6"
+          className="text-label mt-6"
+          style={{ color: "rgba(255,182,193,0.55)" }}
         >
           NO SPAM. NO BASIC ADVICE. SOVEREIGN INTELLIGENCE ONLY.
         </motion.p>
