@@ -100,15 +100,17 @@ const ManifestoLine = ({
   end: number;
   index: number;
 }) => {
-  const opacity = useTransform(progress, [start, end], [0.08, 1]);
+  const opacity = useTransform(progress, [start, end], [0.5, 1]);
   const x = useTransform(progress, [start, end], [-20, 0]);
+  // Blush pink when not yet revealed → white when fully in view
+  const color = useTransform(progress, [start, end], ["#FFB6C1", "#FFFFFF"]);
 
   return (
     <motion.p
-      style={{ opacity, x, color: "#FFB6C1" }}
+      style={{ opacity, x, color }}
       className="font-display text-3xl md:text-6xl lg:text-7xl tracking-tighter leading-[0.95]"
     >
-      {index === 5 ? <em style={{ color: "#FF69B4" }}>{text}</em> : text}
+      {index === 5 ? <em>{text}</em> : text}
     </motion.p>
   );
 };
