@@ -130,43 +130,45 @@ const HeroSection = () => {
           </span>
         </motion.div>
 
-        {/* Main headline — with glitch effect */}
-        <div className="overflow-hidden">
-          <motion.h1
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            transition={{ delay: 0.9, duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
-            className="font-display text-foreground leading-[0.82] tracking-tighter glitch-text"
-            style={{ fontSize: "clamp(3.5rem, 11vw, 15rem)" }}
-          >
-            THE UPGRADE
-          </motion.h1>
-        </div>
-        <div className="overflow-hidden">
-          <motion.h1
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            transition={{ delay: 1.0, duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
-            className="font-display text-foreground leading-[0.82] tracking-tighter italic"
-            style={{ fontSize: "clamp(3.5rem, 11vw, 15rem)" }}
-          >
-            IS{" "}
-            <span style={{ color: "#FF1493", textShadow: "0 0 60px rgba(255,20,147,0.6)" }}>
-              NOT
-            </span>
-          </motion.h1>
-        </div>
-        <div className="overflow-hidden">
-          <motion.h1
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            transition={{ delay: 1.1, duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
-            className="font-display text-foreground leading-[0.82] tracking-tighter"
-            style={{ fontSize: "clamp(3.5rem, 11vw, 15rem)" }}
-          >
-            OPTIONAL
-          </motion.h1>
-        </div>
+        {/* Main headline — reveals on hover */}
+        <motion.div
+          animate={{ opacity: hovered ? 1 : 0, y: hovered ? 0 : 24 }}
+          transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+        >
+          <div className="overflow-hidden">
+            <motion.h1
+              animate={{ y: hovered ? 0 : "100%" }}
+              transition={{ delay: 0, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+              className="font-display text-foreground leading-[0.82] tracking-tighter glitch-text"
+              style={{ fontSize: "clamp(3.5rem, 11vw, 15rem)" }}
+            >
+              THE UPGRADE
+            </motion.h1>
+          </div>
+          <div className="overflow-hidden">
+            <motion.h1
+              animate={{ y: hovered ? 0 : "100%" }}
+              transition={{ delay: 0.07, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+              className="font-display text-foreground leading-[0.82] tracking-tighter italic"
+              style={{ fontSize: "clamp(3.5rem, 11vw, 15rem)" }}
+            >
+              IS{" "}
+              <span style={{ color: "#FF1493", textShadow: "0 0 60px rgba(255,20,147,0.6)" }}>
+                NOT
+              </span>
+            </motion.h1>
+          </div>
+          <div className="overflow-hidden">
+            <motion.h1
+              animate={{ y: hovered ? 0 : "100%" }}
+              transition={{ delay: 0.14, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+              className="font-display text-foreground leading-[0.82] tracking-tighter"
+              style={{ fontSize: "clamp(3.5rem, 11vw, 15rem)" }}
+            >
+              OPTIONAL
+            </motion.h1>
+          </div>
+        </motion.div>
 
         {/* Bottom row */}
         <motion.div
