@@ -36,24 +36,23 @@ const HeroSection = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative h-screen w-full overflow-hidden grain-overlay"
+      className="relative w-full overflow-hidden grain-overlay"
+      style={{ height: "100dvh" }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onMouseMove={handleMouseMove}
       data-cursor="EXPLORE"
     >
       {/* Background Image */}
-      <motion.div
-        initial={{ scale: 1.08, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 2.2, ease: [0.23, 1, 0.32, 1] }}
-        className="absolute inset-0"
-      >
+      <div className="absolute inset-0" style={{ transform: "translateZ(0)" }}>
         <img
           src={heroImage}
           alt="TheBossipGirl editorial"
           className="h-full w-full object-cover object-center transition-all duration-1000 ease-in-out"
-          style={{ filter: hovered ? "grayscale(0%) contrast(105%)" : "grayscale(100%) contrast(115%)" }}
+          style={{
+            filter: hovered ? "grayscale(0%) contrast(105%)" : "grayscale(100%) contrast(115%)",
+            willChange: "filter",
+          }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/10 to-background" />
         <div className="absolute inset-0 bg-gradient-to-r from-background/70 via-transparent to-transparent" />
@@ -65,7 +64,7 @@ const HeroSection = () => {
             opacity: hovered ? 1 : 0,
           }}
         />
-      </motion.div>
+      </div>
 
       {/* Mouse spotlight */}
       <motion.div
