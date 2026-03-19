@@ -48,7 +48,7 @@ const HeroSection = () => {
         <img
           src={heroImage}
           alt="TheBossipGirl editorial"
-          className="h-full w-full object-cover object-center transition-all duration-1000 ease-in-out"
+          className="h-full w-full object-cover object-top transition-all duration-1000 ease-in-out"
           style={{
             filter: hovered ? "grayscale(0%) contrast(105%)" : "grayscale(100%) contrast(115%)",
             willChange: "filter",
