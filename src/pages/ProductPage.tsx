@@ -38,7 +38,17 @@ const ProductPage = () => {
     const newRipple = { x, y, id: Date.now() };
     setRipples((prev) => [...prev, newRipple]);
     setTimeout(() => setRipples((prev) => prev.filter((r) => r.id !== newRipple.id)), 700);
-    setTimeout(() => setPurchased(true), 300);
+    // Open Payhip overlay if available
+    if (product.payhipUrl) {
+      const productId = product.payhipUrl.split("/b/")[1];
+      if (typeof window !== "undefined" && (window as any).Payhip) {
+        (window as any).Payhip.checkout({ product: productId });
+      } else {
+        window.open(product.payhipUrl, "_blank");
+      }
+    } else {
+      setTimeout(() => setPurchased(true), 300);
+    }
   };
 
   return (
