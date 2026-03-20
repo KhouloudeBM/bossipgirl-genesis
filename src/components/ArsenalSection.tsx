@@ -2,6 +2,15 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { PRODUCTS } from "@/data/products";
 
+const openPayhip = (url: string) => {
+  const productId = url.split("/b/")[1];
+  if (typeof window !== "undefined" && (window as any).Payhip) {
+    (window as any).Payhip.checkout({ product: productId });
+  } else {
+    window.open(url, "_blank");
+  }
+};
+
 const ArsenalSection = () => {
   const featured = PRODUCTS.find((p) => p.available);
   const coming = PRODUCTS.filter((p) => !p.available);
@@ -90,19 +99,18 @@ const ArsenalSection = () => {
 
               <div className="flex items-center gap-4">
                 {/* Payhip buy button — opens overlay */}
-                <a
-                  href={featured.payhipUrl}
-                  className="payhip-buy-button px-10 py-4 font-ui text-sm tracking-[0.2em] uppercase text-white transition-all"
-                  data-theme="none"
+                <button
+                  onClick={() => featured.payhipUrl && openPayhip(featured.payhipUrl)}
+                  className="px-10 py-4 font-ui text-sm tracking-[0.2em] uppercase text-white transition-all"
                   style={{
                     background: "linear-gradient(135deg, #FF1493, #FF69B4)",
                     boxShadow: "0 0 40px rgba(255,20,147,0.35)",
-                    display: "inline-block",
+                    cursor: "none",
                   }}
                   data-cursor="ENTER"
                 >
                   BUY NOW — {featured.price}
-                </a>
+                </button>
                 <Link
                   to={`/product/${featured.id}`}
                   className="font-ui text-xs tracking-[0.25em] uppercase transition-colors"
